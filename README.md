@@ -99,7 +99,7 @@ The database is named `snapdb` and contains the following collections:
 | harvestLog | Results of harvest job, including status and stores processed count
 | store-###  | The latest retailer collection (pointed to by metadata/currentStoreCollection)
 
-*** Database Collections ***
+***Database Collections***
 
 Each store document (row) in the store collection contains all the fields named in the ***SNAP Data*** table above, along with a standard MongoDB `_id` field.
 
