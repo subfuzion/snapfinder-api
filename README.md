@@ -114,8 +114,8 @@ A harvest job is started periodically (currently daily) to import data about cur
 
 | Resource                                      | Description
 |:----------------------------------------------|:-----------
-| [POST jobs/harvest](https://github.com/tonypujals/snapfinder/wiki/Start-Harvest-Job)   | Starts a harvest job.
-| [GET jobs/harvest](/wiki/Get-Harvest-Job)      | Returns the latest published harvest job status and details.
+| [POST jobs/harvest][Start-Harvest-Job]        | Starts a harvest job.
+| [GET jobs/harvest][Get-Harvest-Job]           | Returns the latest published harvest job status and details.
 
 #### Start Harvest Job
 
@@ -191,12 +191,13 @@ Developers need:
 
 
 
-[ITSource]: 	http://www.itsourcetek.com/
-[SNAP]:     	http://www.snapretailerlocator.com/
-[USDA]:    		http://www.fns.usda.gov/snap/
-[CRONIO]:   	http://cronio.io/
-[MongoLab]: 	https://mongolab.com/
-[GitHub]:		https://github.com/
-[C9Chrome]:		https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
-[Cloud9]:		https://c9.io/
-
+[ITSource]: 				http://www.itsourcetek.com/
+[SNAP]:     				http://www.snapretailerlocator.com/
+[USDA]:    					http://www.fns.usda.gov/snap/
+[CRONIO]:   				http://cronio.io/
+[MongoLab]: 				https://mongolab.com/
+[GitHub]:					https://github.com/
+[C9Chrome]:					https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
+[Cloud9]:					https://c9.io/
+[Start-Harvest-Job]:		https://github.com/tonypujals/snapfinder/wiki/Start-Harvest-Job
+[Get-Harvest-Job]:			https://github.com/tonypujals/snapfinder/wiki/Get-Harvest-Job
