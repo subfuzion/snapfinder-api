@@ -1,7 +1,7 @@
-SNAPfinder (snapfinder.org)
-===========================
+SNAPfinder
+==========
 
-[API][API]
+[API Documentation][API]
 
 Introduction
 ------------
