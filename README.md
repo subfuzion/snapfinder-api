@@ -191,13 +191,13 @@ Developers need:
 
 
 
-[ITSource]: 	http://www.itsourcetek.com/
-[SNAP]:     	http://www.snapretailerlocator.com/
-[USDA]:    		http://www.fns.usda.gov/snap/
-[CRONIO]:   	http://cronio.io/
-[MongoLab]: 	https://mongolab.com/
-[GitHub]:		https://github.com/
-[C9Chrome]:		https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
-[Cloud9]:		https://c9.io/
+[ITSource]:          http://www.itsourcetek.com/
+[SNAP]:              http://www.snapretailerlocator.com/
+[USDA]:              http://www.fns.usda.gov/snap/
+[CRONIO]:            http://cronio.io/
+[MongoLab]:          https://mongolab.com/
+[GitHub]:            https://github.com/
+[C9Chrome]:          https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
+[Cloud9]:            https://c9.io/
 [Start-Harvest-Job]: https://github.com/tonypujals/snapfinder/wiki/Start-Harvest-Job
 [Get-Harvest-Job]:   https://github.com/tonypujals/snapfinder/wiki/Get-Harvest-Job
