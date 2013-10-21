@@ -122,7 +122,7 @@ A harvest job is started periodically (currently daily) to import data about cur
 
 | Resource                     | Description |
 |:-----------------------------|:------------
-| [GET stores                  | Returns a collection of stores and basic details](Get-Stores)
+| [GET stores](Get-Stores)     | Returns a collection of stores and basic details
 | [GET stores/{id}](Get-Store) | Returns details about a specific store
 
 
