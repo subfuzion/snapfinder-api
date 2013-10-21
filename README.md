@@ -117,57 +117,6 @@ A harvest job is started periodically (currently daily) to import data about cur
 | [POST jobs/harvest][Start-Harvest-Job]     | Starts a harvest job.
 | [GET jobs/harvest][Get-Harvest-Job]        | Returns the latest published harvest job status and details.
 
-#### Start Harvest Job
-
-<pre><code><strong>POST jobs/harvest</strong>
-Start a harvest job to import retailer information published in USDA files into MongoDB.
-
-<strong>Sample request</strong>
-curl -X POST http://api.snapfinder.org/v1/jobs/harvest
-
-<strong>Sample request with callback</strong>
-curl -X POST http://api.snapfinder.org/v1/jobs/harvest -d '{"callbackuri":"joan@example.com","token":"{\"key\":\"value\"}"'
-
-<strong>Response</strong>
-Returns immediately with HTTP 202 (Accepted). The job will start running.
-Job status can be retrieved with a GET request.
-
-<strong>Sample callback</strong>
-{
-    "status": "success",
-    "count": 193627,
-    "timestamp": "Tue Sep 17 2013 13:12:44 GMT-0700 (PDT)",
-    "token": {
-        "key": "value"
-    }
-}
-</code></pre>
-
-
-#### Get Harvest Status
-
-<pre><code><strong>GET jobs/harvest</strong>
-Returns the latest harvest job status.
-
-<strong>Sample request</strong>
-curl -X GET http://api.snapfinder.org/v1/jobs/harvest
-
-<strong>Response</strong>
-status: started | success | error
-error: null or the error object that was returned
-
-<strong>Sample response</strong>
-{
-    "status": "success",
-    "count": 193627,
-    "timestamp": "Tue Sep 17 2013 13:12:44 GMT-0700 (PDT)",
-    "error": null,
-    "_id": {
-        "$oid": "5238b7bc1db286f61103c702"
-    }
-}
-</code></pre>
-
 
 ### Stores
 
