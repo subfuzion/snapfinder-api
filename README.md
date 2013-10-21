@@ -114,8 +114,8 @@ A harvest job is started periodically (currently daily) to import data about cur
 
 | Resource                                      | Description
 |:----------------------------------------------|:-----------
-| [POST jobs/harvest](wiki/Start-Harvest-Job)   | Starts a harvest job.
-| [GET jobs/harvest](wiki/Get-Harvest-Job)      | Returns the latest published harvest job status and details.
+| [POST jobs/harvest](/wiki/Start-Harvest-Job)   | Starts a harvest job.
+| [GET jobs/harvest](/wiki/Get-Harvest-Job)      | Returns the latest published harvest job status and details.
 
 #### Start Harvest Job
 
