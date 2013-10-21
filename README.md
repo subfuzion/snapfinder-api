@@ -120,10 +120,10 @@ A harvest job is started periodically (currently daily) to import data about cur
 
 ### Stores
 
-| Resource             | Description |
-|:---------------------|:------------
-| GET stores           | Returns a collection of stores and basic details
-| GET stores/{id}      | Returns details about a specific store
+| Resource                     | Description |
+|:-----------------------------|:------------
+| [GET stores                  | Returns a collection of stores and basic details](Get-Stores)
+| [GET stores/{id}](Get-Store) | Returns details about a specific store
 
 
 Development
@@ -150,3 +150,5 @@ Developers need:
 [Cloud9]:            https://c9.io/
 [Start-Harvest-Job]: https://github.com/tonypujals/snapfinder/wiki/Start-Harvest-Job
 [Get-Harvest-Job]:   https://github.com/tonypujals/snapfinder/wiki/Get-Harvest-Job
+[Get-Stores]:        https://github.com/tonypujals/snapfinder/wiki/Get-Stores
+[Get-Store]:         https://github.com/tonypujals/snapfinder/wiki/Get-Store
