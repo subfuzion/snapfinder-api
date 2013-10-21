@@ -1,6 +1,8 @@
 SNAPfinder (snapfinder.org)
 ===========================
 
+[API][API]
+
 Introduction
 ------------
 SNAPfinder is a REST API for locating retailers that participate in the SNAP (formerly known as Food Stamps) program.
@@ -103,29 +105,6 @@ The database is named `snapdb` and contains the following collections:
 
 Each store document (row) in the store collection contains all the fields named in the ***SNAP Data*** table above, along with a standard MongoDB `_id` field.
 
-API
----
-The following section describes the REST API v1 resources. The base URI is:
-
-`http://api.snapfinder.org/v1/`
-
-### Harvest jobs
-A harvest job is started periodically (currently daily) to import data about current SNAP retailer locations from files published by the USDA.
-
-| Resource                                   | Description
-|:-------------------------------------------|:-----------
-| [POST jobs/harvest][Start-Harvest-Job]     | Starts a harvest job.
-| [GET jobs/harvest][Get-Harvest-Job]        | Returns the latest published harvest job status and details.
-
-
-### Stores
-
-| Resource                     | Description |
-|:-----------------------------|:------------
-| [GET stores][Get-Stores]     | Returns a collection of stores and basic details
-| [GET stores/{id}][Get-Store] | Returns details about a specific store
-
-
 Development
 -----------
 One of the goals of this project is to provide a documented example of building an API using open source tools available online.
@@ -138,8 +117,7 @@ Developers need:
 
 
 
-
-
+[API]:               https://github.com/tonypujals/snapfinder/wiki/API
 [ITSource]:          http://www.itsourcetek.com/
 [SNAP]:              http://www.snapretailerlocator.com/
 [USDA]:              http://www.fns.usda.gov/snap/
@@ -148,7 +126,3 @@ Developers need:
 [GitHub]:            https://github.com/
 [C9Chrome]:          https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
 [Cloud9]:            https://c9.io/
-[Start-Harvest-Job]: https://github.com/tonypujals/snapfinder/wiki/Start-Harvest-Job
-[Get-Harvest-Job]:   https://github.com/tonypujals/snapfinder/wiki/Get-Harvest-Job
-[Get-Stores]:        https://github.com/tonypujals/snapfinder/wiki/Get-Stores
-[Get-Store]:         https://github.com/tonypujals/snapfinder/wiki/Get-Store
