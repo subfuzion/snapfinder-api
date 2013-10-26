@@ -1,5 +1,7 @@
-SNAPfinder (snapfinder.org)
-===========================
+SNAPfinder
+==========
+
+[API Documentation][API]
 
 Introduction
 ------------
@@ -103,80 +105,6 @@ The database is named `snapdb` and contains the following collections:
 
 Each store document (row) in the store collection contains all the fields named in the ***SNAP Data*** table above, along with a standard MongoDB `_id` field.
 
-API
----
-The following section describes the REST API v1 resources. The base URI is:
-
-`http://api.snapfinder.org/v1/`
-
-### Harvest jobs
-A harvest job is started periodically (currently daily) to import data about current SNAP retailer locations from files published by the USDA.
-
-| Resource             | Description |
-|:---------------------|:------------
-| POST jobs/harvest    | Starts a harvest job.
-| GET jobs/harvest     | Returns the latest published harvest job status and details.
-
-#### Start Harvest Job
-
-<pre><code><strong>POST jobs/harvest</strong>
-Start a harvest job to import retailer information published in USDA files into MongoDB.
-
-<strong>Sample request</strong>
-curl -X POST http://api.snapfinder.org/v1/jobs/harvest
-
-<strong>Sample request with callback</strong>
-curl -X POST http://api.snapfinder.org/v1/jobs/harvest -d '{"callbackuri":"joan@example.com","token":"{\"key\":\"value\"}"'
-
-<strong>Response</strong>
-Returns immediately with HTTP 202 (Accepted). The job will start running.
-Job status can be retrieved with a GET request.
-
-<strong>Sample callback</strong>
-{
-    "status": "success",
-    "count": 193627,
-    "timestamp": "Tue Sep 17 2013 13:12:44 GMT-0700 (PDT)",
-    "token": {
-        "key": "value"
-    }
-}
-</code></pre>
-
-
-#### Get Harvest Status
-
-<pre><code><strong>GET jobs/harvest</strong>
-Returns the latest harvest job status.
-
-<strong>Sample request</strong>
-curl -X GET http://api.snapfinder.org/v1/jobs/harvest
-
-<strong>Response</strong>
-status: started | success | error
-error: null or the error object that was returned
-
-<strong>Sample response</strong>
-{
-    "status": "success",
-    "count": 193627,
-    "timestamp": "Tue Sep 17 2013 13:12:44 GMT-0700 (PDT)",
-    "error": null,
-    "_id": {
-        "$oid": "5238b7bc1db286f61103c702"
-    }
-}
-</code></pre>
-
-
-### Stores
-
-| Resource             | Description |
-|:---------------------|:------------
-| GET stores           | Returns a collection of stores and basic details
-| GET stores/{id}      | Returns details about a specific store
-
-
 Development
 -----------
 One of the goals of this project is to provide a documented example of building an API using open source tools available online.
@@ -189,14 +117,12 @@ Developers need:
 
 
 
-
-
-[ITSource]: 	http://www.itsourcetek.com/
-[SNAP]:     	http://www.snapretailerlocator.com/
-[USDA]:    		http://www.fns.usda.gov/snap/
-[CRONIO]:   	http://cronio.io/
-[MongoLab]: 	https://mongolab.com/
-[GitHub]:		https://github.com/
-[C9Chrome]:		https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
-[Cloud9]:		https://c9.io/
-
+[API]:               https://github.com/tonypujals/snapfinder/wiki/
+[ITSource]:          http://www.itsourcetek.com/
+[SNAP]:              http://www.snapretailerlocator.com/
+[USDA]:              http://www.fns.usda.gov/snap/
+[CRONIO]:            http://cronio.io/
+[MongoLab]:          https://mongolab.com/
+[GitHub]:            https://github.com/
+[C9Chrome]:          https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
+[Cloud9]:            https://c9.io/
