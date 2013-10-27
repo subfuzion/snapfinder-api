@@ -5,6 +5,7 @@ var nconf = require('nconf')
   , http = require('http')
   , path = require('path')
   , logging = require('./lib/logging')
+  , snapdb = require('./lib/snapdb')
   ;
 
 
@@ -47,9 +48,30 @@ if (app.get('env') == 'development') {
   app.use(express.errorHandler());
 }
 
-var port = app.get('port');
-http.createServer(app).listen(port, function () {
-  console.log('app listening on ' + port);
+// ==================================================================
+// Start listening for requests after connecting to database
+// ==================================================================
+
+// on successful connection to database, start listening for requests
+snapdb.connect(mongodbUri, function (err, client) {
+  if (err) {
+    console.error('database connection failed, exiting now: ' + err);
+    process.exit(1);
+  } else {
+    console.log('connected');
+
+    // save db instance for use by route handlers
+    db = client;
+    app.set('db', db);
+
+    log = logging.logger(db, logLevel);
+    app.set('log', log);
+
+    var port = app.get('port');
+    http.createServer(app).listen(port, function () {
+      console.log('app listening on ' + port);
+    });
+  }
 });
 
 
