@@ -1,0 +1,5 @@
+{
+  "LOG_LEVEL": 0,
+  "IMPORT_URI": "http://www.snapretailerlocator.com/export/Nationwide.zip",
+  "MONGODB_URI": "mongodb://apiuser:snapdb@ds041168.mongolab.com:41168/snapdb?w=1&maxPoolSize=1"
+}
