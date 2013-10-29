@@ -110,15 +110,6 @@ app.post('/jobs/harvest', function (req, res) {
     }
   };
 
-//  logHarvestStatus({status: 'started'});
-//  importData(function (err, result) {
-//    if (err) {
-//      // logHarvestStatus({status: 'error', error: err});
-//    } else {
-//      // logHarvestStatus({status: 'success', count: result.processedCount});
-//    }
-//  });
-
   var spawn = require('child_process').spawn;
   var importer = spawn('./importsnap', [mongodbUri, logLevel]);
 
