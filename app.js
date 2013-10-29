@@ -7,6 +7,7 @@ var nconf = require('nconf')
   , logging = require('./lib/logging')
   , snapdb = require('./lib/snapdb')
   , snapcsv = require('./lib/snapcsv')
+  , util = require('util');
   ;
 
 var app
@@ -109,14 +110,28 @@ app.post('/jobs/harvest', function (req, res) {
     }
   };
 
-  logHarvestStatus({status: 'started'});
+//  logHarvestStatus({status: 'started'});
+//  importData(function (err, result) {
+//    if (err) {
+//      // logHarvestStatus({status: 'error', error: err});
+//    } else {
+//      // logHarvestStatus({status: 'success', count: result.processedCount});
+//    }
+//  });
 
-  importData(function (err, result) {
-    if (err) {
-      logHarvestStatus({status: 'error', error: err});
-    } else {
-      logHarvestStatus({status: 'success', count: result.processedCount});
-    }
+  var spawn = require('child_process').spawn;
+  var importer = spawn('./importsnap', [mongodbUri, logLevel]);
+
+  importer.stdout.on('data', function (data) {
+    util.print(data.toString());
+  });
+
+  importer.stderr.on('data', function (data) {
+    util.print(data.toString());
+  });
+
+  importer.on('close', function (code) {
+    console.log('import process exited with code ' + code);
   });
 
   res.send(202);
@@ -126,65 +141,5 @@ app.post('/jobs/harvest', function (req, res) {
 // ==================================================================
 // Implementation
 // ==================================================================
-
-function importData(callback) {
-
-//  snapdb.dropStoresCollection(function (err, result) {
-//    if (err) {
-//      callback(err);
-//      return;
-//    }
-
-//    console.log('dropped stores collection: ' + result);
-
-  var storeCollection = snapdb.createStoreCollectionName();
-  var importer = snapcsv.importer();
-  var sentinel = -1;
-  var harvestResult = {
-    importCount: 0,
-    processedCount: 0
-  };
-
-  importer.on('error', function (error) {
-    callback(error);
-  });
-
-  importer.on('end', function (result) {
-    harvestResult.importCount = result.count;
-  });
-
-  importer.on('data', function (store, index) {
-    if (store === sentinel) {
-      // no more data coming
-      console.log('sentinel received, no more data');
-      callback(null, harvestResult);
-      return;
-    }
-
-    harvestResult.processedCount++;
-
-    snapdb.saveStore(storeCollection, store, function (err, result) {
-      if (err) {
-        console.log('error saving store: ' + JSON.stringify(store));
-        logHarvestStatus({status: 'error', error: err});
-      } else {
-        // console.log('#' + index + '(processedCount: ' + harvestResult.processedCount + ', importCount: ' + harvestResult.importCount); // + ' ' + JSON.stringify(result));
-      }
-    });
-  });
-
-  importer.import(sentinel);
-//  });
-}
-
-function logHarvestStatus(harvestStatus) {
-  harvestStatus = harvestStatus || {};
-  harvestStatus.timestamp = Date();
-  harvestStatus.status = harvestStatus.status || null;
-  harvestStatus.error = harvestStatus.error || null;
-  harvestStatus.count = harvestStatus.count || 0;
-
-  log.information('harvest status', 'harvest', harvestStatus);
-}
 
 

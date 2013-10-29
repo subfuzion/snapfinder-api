@@ -96,7 +96,7 @@ function importData(callback) {
         // console.log('saved store %d', store.serialid);
       }
 
-      var step = 10000;
+      var step = 1000;
       var processed = harvestStatus.savedCount + harvestStatus.errorCount;
         if (processed % step == 0) {
           console.log('importing...%d', Math.floor(processed / step) * step);
