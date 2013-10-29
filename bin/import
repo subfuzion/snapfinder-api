@@ -1,15 +1,44 @@
 #! /bin/bash
 
-: ${APIUSER:?"environment variable for mongo user id must be set"}
-: ${APIPASS:?"environment variable for mongo user password must be set"}
-: ${APIHOST:?"environment variable for mongo host must be set"}
+function log
+{
+  echo $1
+  echo "`date +"%b %d %T"` $1" >> import.log
+}
 
-curl -O www.snapretailerlocator.com/export/Nationwide.zip
-unzip -o Nationwide.zip
+function logerror
+{
+  echo $1
+  echo "`date +"%b %d %T"` $1" >> error.log
+}  
+
+function cleanup
+{
+  rm -f *.zip *.csv
+}
+
+function error_exit
+{
+  log "error: $2 (check error.log)"
+  cleanup 
+  exit ${1:-1}
+}
+
+log started
+
+[ -n "$APIUSER" ] || error_exit 1 "APIUSER environment variable not set"
+[ -n "$APIPASS" ] || error_exit 1 "APIPASS environment variable not set"
+[ -n "$APIHOST" ] || error_exit 1 "APIHOST environment variable not set"
+
+log "downloading snap data"
+curl -O --fail --silent --show-error  www.snapretailerlocator.com/export/Nationwide.zip 2>> error.log || error_exit 1 "curl failed"
+
+log "extracting data"
+unzip -o Nationwide.zip 2>> error.log || error_exit 1 "unzip failed" 
 csv=`ls store_locations*.csv`
 
-mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fieldFile csvfields --type csv --headerline --drop < $csv
+log "importing data to mongo"
+mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fieldFile csvfields --type csv --headerline --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
 
-rm Nationwide.zip
-rm $csv
-
+cleanup
+log finished
