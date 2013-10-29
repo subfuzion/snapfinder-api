@@ -1,10 +1,14 @@
 #! /bin/bash
 
+: ${APIUSER:?"environment variable for mongo user id must be set"}
+: ${APIPASS:?"environment variable for mongo user password must be set"}
+: ${APIHOST:?"environment variable for mongo host must be set"}
+
 curl -O www.snapretailerlocator.com/export/Nationwide.zip
 unzip -o Nationwide.zip
 csv=`ls store_locations*.csv`
 
-mongoimport -u apiuser -p snapdb --host ds053148.mongolab.com:53148 --db snapdb --collection stores --fieldFile csvfields --type csv --headerline --drop < $csv
+# mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fieldFile csvfields --type csv --headerline --drop < $csv
 
 rm Nationwide.zip
 rm $csv
