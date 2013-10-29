@@ -1,23 +1,23 @@
-#! /bin/bash
+#! /bin/sh
 
-function log
+log()
 {
   echo $1
   echo "`date +"%b %d %T"` $1" >> import.log
 }
 
-function logerror
+logerror()
 {
   echo $1
   echo "`date +"%b %d %T"` $1" >> error.log
 }  
 
-function cleanup
+cleanup()
 {
   rm -f *.zip *.csv
 }
 
-function error_exit
+error_exit()
 {
   log "error: $2 (check error.log)"
   cleanup 
