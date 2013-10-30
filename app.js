@@ -26,7 +26,6 @@ nconf.argv().env().file('./config.json');
 
 logLevel = nconf.get('LOG_LEVEL');
 
-// WARNING! Defaults to local mongo
 // Ensure MONGODB_URI env var set correctly in production
 mongodbUri = nconf.get('MONGODB_URI');
 
@@ -90,28 +89,14 @@ app.get('/', routes.index);
 // API routes
 // ==================================================================
 
-app.get('/data', function(req, res) {
- snapdb.getData(function(err, docs) {
-   res.end(JSON.stringify(docs));
- })
-})
-
-
 /**
  * Start a harvest job
  * The request returns right away with HTTP 202 Accepted
  */
 app.post('/jobs/harvest', function (req, res) {
-  var print = function(err, result) {
-    if (err) {
-      console.log('error saving harvest status: ' + err);
-    } else {
-      console.log('saved harvest status: ' + JSON.stringify(result));
-    }
-  };
-
   var spawn = require('child_process').spawn;
-  var importer = spawn('./importsnap', [mongodbUri, logLevel]);
+  // var importer = spawn('./bin/importsnap', [mongodbUri, logLevel]);
+  var importer = spawn('./bin/import');
 
   importer.stdout.on('data', function (data) {
     util.print(data.toString());
@@ -127,6 +112,14 @@ app.post('/jobs/harvest', function (req, res) {
 
   res.send(202);
 });
+
+// ==================================================================
+
+app.get('/data', function(req, res) {
+ snapdb.getData(function(err, docs) {
+   res.end(JSON.stringify(docs));
+ })
+})
 
 
 // ==================================================================
