@@ -38,7 +38,8 @@ unzip -o Nationwide.zip 2>> error.log || error_exit 1 "unzip failed"
 csv=`ls store_locations*.csv`
 
 log "importing data to mongo"
-mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fieldFile csvfields --type csv --headerline --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
+FIELDS="storeName,longitude,latitude,address1,address2,city,state,zip5,zip4,county"
+mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fields $FIELDS --type csv --headerline --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
 
 cleanup
 log finished
