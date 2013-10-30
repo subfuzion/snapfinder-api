@@ -38,9 +38,10 @@ error_exit()
 
 log started
 
-[ -n "$APIUSER" ] || error_exit 1 "APIUSER environment variable not set"
-[ -n "$APIPASS" ] || error_exit 1 "APIPASS environment variable not set"
-[ -n "$APIHOST" ] || error_exit 1 "APIHOST environment variable not set"
+# currently not necessary since writing to local mongo
+#[ -n "$APIUSER" ] || error_exit 1 "APIUSER environment variable not set"
+#[ -n "$APIPASS" ] || error_exit 1 "APIPASS environment variable not set"
+#[ -n "$APIHOST" ] || error_exit 1 "APIHOST environment variable not set"
 
 log "downloading snap data"
 curl -O --fail --silent --show-error  www.snapretailerlocator.com/export/Nationwide.zip 2>> error.log || error_exit 1 "curl failed"
