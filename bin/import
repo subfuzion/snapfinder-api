@@ -24,15 +24,9 @@ logerror()
   logdb error $1 
 }  
 
-cleanup()
-{
-  rm -f *.zip *.csv
-}
-
 error_exit()
 {
   log "error: $2 (check error.log)"
-  cleanup 
   exit ${1:-1}
 }
 
@@ -67,5 +61,7 @@ if $LOCALMONGO ; then
   mongo snapdb --eval "var id = db.stores.find().limit(1).next()._id; db.stores.remove({_id:id})"
 fi
 
-cleanup
 log finished
+
+# always cleanup
+trap "rm -f *.zip *.csv" EXIT
