@@ -1,15 +1,27 @@
 #! /bin/sh
 
+LOCALMONGO=true
+
+logdb()
+{
+  if $LOCALMONGO ; then
+    timestamp=`date`
+    mongo snapdb --eval "db.harvestlog.insert({timestamp:\"$timestamp\", category:\"$1\", message:\"$2\"})"
+  fi
+}
+
 log()
 {
   echo $1
   echo "`date +"%b %d %T"` $1" >> import.log
+  logdb info $1
 }
 
 logerror()
 {
   echo $1
   echo "`date +"%b %d %T"` $1" >> error.log
+  logdb error $1 
 }  
 
 cleanup()
@@ -37,9 +49,16 @@ log "extracting data"
 unzip -o Nationwide.zip 2>> error.log || error_exit 1 "unzip failed" 
 csv=`ls store_locations*.csv`
 
+# slice off header row or mongo will either use those names instead of
+# the provided ones or else will insert as a documenting, depending on
+# presence of --headerline
+# tail =n +2 "$csv"
+
 log "importing data to mongo"
 FIELDS="storeName,longitude,latitude,address1,address2,city,state,zip5,zip4,county"
-mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fields $FIELDS --type csv --headerline --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
+#mongoimport -u $APIUSER -p $APIPASS --host $APIHOST --db snapdb --collection stores --fields $FIELDS --type csv --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
+
+mongoimport --host localhost --db snapdb --collection stores --fields $FIELDS --type csv --drop < $csv 2>> error.log || error_exit 1 "mongo import failed"
 
 cleanup
 log finished
