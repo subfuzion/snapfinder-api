@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 
-var logging = require('./lib/logging')
-  , snapdb = require('./lib/snapdb')
-  , snapcsv = require('./lib/snapcsv')
+var logging = require('../lib/logging')
+  , snapdb = require('../lib/snapdb')
+  , snapcsv = require('../lib/snapcsv')
   ;
 
 var log
