@@ -1,5 +1,5 @@
 #! /bin/sh
 
 PID=`ps aux | grep "[n]ode app" | awk '{ print $2 }'`
-[ -z "$PID" ] || echo "stopping node app [$PID]" && kill -s HUP $PID
+[ -z "$PID" ] || (echo "stopping node app [$PID]"; kill -s HUP $PID)
 rm -f app.pid
