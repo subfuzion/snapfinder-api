@@ -59,6 +59,9 @@ mongoimport --host localhost --db snapdb --collection stores --fields $FIELDS --
 # could search for "Store_Name" but this way will work for any header
 if $LOCALMONGO ; then
   mongo snapdb --eval "var id = db.stores.find().limit(1).next()._id; db.stores.remove({_id:id})"
+  mongo snapdb --eval "db.stores.ensureIndex({"latitude": 1})"
+  mongo snapdb --eval "db.stores.ensureIndex({"longitude": 1})"
+  mongo snapdb --eval "db.stores.ensureIndex({"zip5": 1, "zip4": 1})"
 fi
 
 log finished

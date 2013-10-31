@@ -1,10 +1,12 @@
-var nconf = require('nconf')
-  , express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
+var _ = require('underscore')
+  , nconf = require('nconf')
   , http = require('http')
   , path = require('path')
   , util = require('util')
+  , express = require('express')
+  , routes = require('./routes')
+  , about = require('./routes/about')
+  , user = require('./routes/user')
   , logging = require('./lib/logging')
   , snapdb = require('./lib/snapdb')
   , snapcsv = require('./lib/snapcsv')
@@ -35,6 +37,7 @@ mongodbUri = nconf.get('MONGODB_URI');
 // Configure Express
 // ==================================================================
 
+// all environments
 app = express();
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
@@ -47,6 +50,7 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+// development only
 if (app.get('env') == 'development') {
   app.use(express.errorHandler());
 }
@@ -84,7 +88,8 @@ snapdb.connect(mongodbUri, function (err, client) {
 // View routes
 // ==================================================================
 
-app.get('/', routes.index);
+// app.get('/', routes.index);
+// app.get('/api', about);
 
 
 // ==================================================================
@@ -121,13 +126,13 @@ app.post('/v1/jobs/harvest', function (req, res) {
 app.get('/v1/stores/nearby', function(req, res) {
   console.log('QUERY: ' + JSON.stringify(req.query));
 
-  res.header('Content-Type', 'application/json');
   var address = req.query.address;
   if (!address) {
     return res.json(400, { reason: "missing address" });
   }
 
-  findStoresByAddress(address, function(err, result) {
+  findStoresWithinRange(address, 5, function(err, result) {
+    if (err) console.log('ERROR: ' + err);
     res.json(result);
   });
 })
@@ -149,6 +154,26 @@ function findStoresByAddress(address, callback) {
     });
   });
 }
+
+function findStoresWithinRange(address, range, callback) {
+  geo.geocode(address, function(err, georesult) {
+    if (err) return callback(err);
+
+    console.log("*******************************************");
+    console.log("GEO RESULT: %j", georesult);
+
+    snapdb.findStoresWithinRange(georesult.location, range, function(err, stores) {
+      if (err) return callback(err);
+
+      var sorted = sortStoresByDistance(georesult.location, stores);
+      georesult.stores = _.filter(sorted, function(store) {
+        return store.distance <= range;
+      });
+      return callback(null, georesult);
+    });
+  });
+}
+  
 
 function sortStoresByDistance(location, stores) {
   var i, s;
