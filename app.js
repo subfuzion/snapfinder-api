@@ -41,7 +41,7 @@ mongodbUri = nconf.get('MONGODB_URI');
 app = express();
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -123,15 +123,26 @@ app.post('/v1/jobs/harvest', function (req, res) {
 
 // ==================================================================
 
+/**
+ * Search for nearby stores.
+ * Query parameters:
+ *   address - can be any valid address (fragment) or
+ *             coordinate pair in the form: lat,lng
+ *   range - specifies a distance in miles, defaults to 3
+ */
 app.get('/v1/stores/nearby', function(req, res) {
   console.log('QUERY: ' + JSON.stringify(req.query));
 
-  var address = req.query.address;
+  var address = req.query.address
+    , range = req.query.range || 3;
+    ;
+
   if (!address) {
     return res.json(400, { reason: "missing address" });
   }
 
-  findStoresWithinRange(address, 5, function(err, result) {
+
+  findStoresWithinRange(address, range, function(err, result) {
     if (err) console.log('ERROR: ' + err);
     res.json(result);
   });
@@ -158,9 +169,6 @@ function findStoresByAddress(address, callback) {
 function findStoresWithinRange(address, range, callback) {
   geo.geocode(address, function(err, georesult) {
     if (err) return callback(err);
-
-    console.log("*******************************************");
-    console.log("GEO RESULT: %j", georesult);
 
     snapdb.findStoresWithinRange(georesult.location, range, function(err, stores) {
       if (err) return callback(err);
