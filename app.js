@@ -4,10 +4,11 @@ var nconf = require('nconf')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
+  , util = require('util')
   , logging = require('./lib/logging')
   , snapdb = require('./lib/snapdb')
   , snapcsv = require('./lib/snapcsv')
-  , util = require('util');
+  , geo = require('./lib/geo')
   ;
 
 var app
@@ -40,7 +41,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -93,7 +95,7 @@ app.get('/', routes.index);
  * Start a harvest job
  * The request returns right away with HTTP 202 Accepted
  */
-app.post('/jobs/harvest', function (req, res) {
+app.post('/v1/jobs/harvest', function (req, res) {
   var spawn = require('child_process').spawn;
   // var importer = spawn('./bin/importsnap', [mongodbUri, logLevel]);
   var importer = spawn('./bin/import');
@@ -113,12 +115,21 @@ app.post('/jobs/harvest', function (req, res) {
   res.send(202);
 });
 
+
 // ==================================================================
 
-app.get('/data', function(req, res) {
- snapdb.getData(function(err, docs) {
-   res.end(JSON.stringify(docs));
- })
+app.get('/v1/stores/nearby', function(req, res) {
+  console.log('QUERY: ' + JSON.stringify(req.query));
+
+  res.header('Content-Type', 'application/json');
+  var address = req.query.address;
+  if (!address) {
+    return res.json(400, { reason: "missing address" });
+  }
+
+  findStoresByAddress(address, function(err, result) {
+    res.json(result);
+  });
 })
 
 
@@ -126,4 +137,31 @@ app.get('/data', function(req, res) {
 // Implementation
 // ==================================================================
 
+function findStoresByAddress(address, callback) {
+  geo.geocode(address, function(err, georesult) {
+    if (err) return callback(err);
+
+    snapdb.findStoresByZip(georesult.zip5, function(err, stores) {
+      if (err) return callback(err);
+
+      georesult.stores = sortStoresByDistance(georesult.location, stores);
+      return callback(null, georesult);
+    });
+  });
+}
+
+function sortStoresByDistance(location, stores) {
+  var i, s;
+
+  for (i = 0; i < stores.length; i++) {
+    s = stores[i];
+    s.distance = geo.getDistanceInMiles(location, { lat:s.latitude, lng:s.longitude });
+  }
+
+  stores.sort(function(a,b) {
+    return a.distance - b.distance;
+  });
+
+  return stores;
+}
 
