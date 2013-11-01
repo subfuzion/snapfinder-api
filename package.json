@@ -15,7 +15,7 @@
   "dependencies": {
     "nconf": "~0.6.7",
     "express": "~3.4.4",
-    "snapfinder-lib": "0.0.2"
+    "snapfinder-lib": "~0.0.3"
   },
   "engines": {
     "node": "~0.10.0"
