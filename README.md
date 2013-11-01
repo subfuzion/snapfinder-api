@@ -117,7 +117,7 @@ Developers need:
 
 
 
-[API]:               https://github.com/tonypujals/snapfinder/wiki/
+[API]:               https://github.com/tonypujals/snapfinder-api/wiki/
 [ITSource]:          http://www.itsourcetek.com/
 [SNAP]:              http://www.snapretailerlocator.com/
 [USDA]:              http://www.fns.usda.gov/snap/
