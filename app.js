@@ -1,16 +1,9 @@
-var _ = require('underscore')
-  , nconf = require('nconf')
+var nconf = require('nconf')
   , http = require('http')
-  , path = require('path')
   , util = require('util')
   , express = require('express')
-  , routes = require('./routes')
-  , about = require('./routes/about')
-  , user = require('./routes/user')
   , logging = require('./lib/logging')
-  , snapdb = require('./lib/snapdb')
-  , snapcsv = require('./lib/snapcsv')
-  , geo = require('./lib/geo')
+  , snapfinder = require('snapfinder-lib');
   ;
 
 var app
@@ -40,15 +33,11 @@ mongodbUri = nconf.get('MONGODB_URI');
 // all environments
 app = express();
 app.set('port', process.env.PORT || 8080);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if (app.get('env') == 'development') {
@@ -61,17 +50,18 @@ if (app.get('env') == 'development') {
 // ==================================================================
 
 // on successful connection to database, start listening for requests
-snapdb.connect(mongodbUri, function (err, client) {
+snapfinder.connect(mongodbUri, function (err, client) {
   if (err) {
     console.error('database connection failed, exiting now: ' + err);
     process.exit(1);
   } else {
     console.log('connected');
 
-    // save db instance for use by route handlers
+    // save client instance in global app
     db = client;
     app.set('db', db);
 
+    // save logger instance in global app
     log = logging.logger(db, logLevel);
     app.set('log', log);
 
@@ -85,14 +75,6 @@ snapdb.connect(mongodbUri, function (err, client) {
 
 
 // ==================================================================
-// View routes
-// ==================================================================
-
-// app.get('/', routes.index);
-// app.get('/api', about);
-
-
-// ==================================================================
 // API routes
 // ==================================================================
 
@@ -101,9 +83,8 @@ snapdb.connect(mongodbUri, function (err, client) {
  * The request returns right away with HTTP 202 Accepted
  */
 app.post('/v1/jobs/harvest', function (req, res) {
-  var spawn = require('child_process').spawn;
-  // var importer = spawn('./bin/importsnap', [mongodbUri, logLevel]);
-  var importer = spawn('./bin/import');
+  var spawn = require('child_process').spawn
+    , importer = spawn('./node_modules/snapfinder/bin/import');
 
   importer.stdout.on('data', function (data) {
     util.print(data.toString());
@@ -124,77 +105,51 @@ app.post('/v1/jobs/harvest', function (req, res) {
 // ==================================================================
 
 /**
- * Search for nearby stores.
+ * Search for nearby stores by providing either an address or a
+ * latlng and optional range query parameters.
  * Query parameters:
- *   address - can be any valid address (fragment) or
- *             coordinate pair in the form: lat,lng
+ *   address - can be any valid address (or portion of an address)
+ *   latlng - a coordinate pair, for ex: latlng=40.714224,-73.961452
+ *     Note: Ensure that no space exists between the latitude and
+ *     longitude values when passed in the latlng parameter
  *   range - specifies a distance in miles, defaults to 3
  */
 app.get('/v1/stores/nearby', function(req, res) {
-  console.log('QUERY: ' + JSON.stringify(req.query));
-
   var address = req.query.address
+    , latlng = req.query.latlng
     , range = req.query.range || 3;
     ;
 
-  if (!address) {
-    return res.json(400, { reason: "missing address" });
+  function sendError(err) {
+    console.log('ERROR: ' + err);
+    res.json(400, { reason: err});
   }
 
-
-  findStoresWithinRange(address, range, function(err, result) {
-    if (err) console.log('ERROR: ' + err);
-    res.json(result);
-  });
-})
-
-
-// ==================================================================
-// Implementation
-// ==================================================================
-
-function findStoresByAddress(address, callback) {
-  geo.geocode(address, function(err, georesult) {
-    if (err) return callback(err);
-
-    snapdb.findStoresByZip(georesult.zip5, function(err, stores) {
-      if (err) return callback(err);
-
-      georesult.stores = sortStoresByDistance(georesult.location, stores);
-      return callback(null, georesult);
-    });
-  });
-}
-
-function findStoresWithinRange(address, range, callback) {
-  geo.geocode(address, function(err, georesult) {
-    if (err) return callback(err);
-
-    snapdb.findStoresWithinRange(georesult.location, range, function(err, stores) {
-      if (err) return callback(err);
-
-      var sorted = sortStoresByDistance(georesult.location, stores);
-      georesult.stores = _.filter(sorted, function(store) {
-        return store.distance <= range;
-      });
-      return callback(null, georesult);
-    });
-  });
-}
-  
-
-function sortStoresByDistance(location, stores) {
-  var i, s;
-
-  for (i = 0; i < stores.length; i++) {
-    s = stores[i];
-    s.distance = geo.getDistanceInMiles(location, { lat:s.latitude, lng:s.longitude });
+  function sendResponse(err, result) {
+    if (err) {
+      sendError(err);
+    } else {
+      res.json(result);
+    }
   }
 
-  stores.sort(function(a,b) {
-    return a.distance - b.distance;
-  });
+  if (!address && !latlng) {
+    return sendError("request must specify either address or latlng query parameter");
+  }
 
-  return stores;
+  if (latlng) {
+    return snapfinder.findStoresInRangeLocation(parselatlng(latlng), range, sendResponse);
+  } else {
+    return snapfinder.findStoresInRangeAddress(address, range, sendResponse);
+  }
+});
+
+function parselatlng(latlng) {
+  try {
+    var coords = latlng.split(',');
+    return { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) };
+  } catch (err) {
+    return null;
+  }
 }
 
