@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app"
   },
-  "repository": "https://github.com/tonypujals/snapfinder.git",
+  "repository": "https://github.com/tonypujals/snapfinder-api.git",
   "keywords": [
     "open data snap ebt gsa itsource"
   ],
@@ -15,7 +15,7 @@
   "dependencies": {
     "nconf": "~0.6.7",
     "express": "~3.4.4",
-    "snapfinder-lib": "0.0.1"
+    "snapfinder-lib": "0.0.2"
   },
   "engines": {
     "node": "~0.10.0"
