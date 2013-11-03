@@ -3,7 +3,7 @@ var nconf = require('nconf')
   , util = require('util')
   , express = require('express')
   , logging = require('./lib/logging')
-  , snapfinder = require('snapfinder-lib');
+  , snap = require('snapfinder-lib');
   ;
 
 var app
@@ -50,7 +50,7 @@ if (app.get('env') == 'development') {
 // ==================================================================
 
 // on successful connection to database, start listening for requests
-snapfinder.connect(mongodbUri, function (err, client) {
+snap.connect(mongodbUri, function (err, client) {
   if (err) {
     console.error('database connection failed, exiting now: ' + err);
     process.exit(1);
@@ -84,7 +84,7 @@ snapfinder.connect(mongodbUri, function (err, client) {
  */
 app.post('/v1/jobs/harvest', function (req, res) {
   var spawn = require('child_process').spawn
-    , importer = spawn('./node_modules/snapfinder/bin/import');
+    , importer = spawn('./node_modules/snap/bin/import');
 
   importer.stdout.on('data', function (data) {
     util.print(data.toString());
@@ -138,9 +138,9 @@ app.get('/v1/stores/nearby', function(req, res) {
   }
 
   if (latlng) {
-    return snapfinder.findStoresInRangeLocation(parselatlng(latlng), range, sendResponse);
+    return snap.findStoresInRangeLocation(parselatlng(latlng), range, sendResponse);
   } else {
-    return snapfinder.findStoresInRangeAddress(address, range, sendResponse);
+    return snap.findStoresInRangeAddress(address, range, sendResponse);
   }
 });
 
@@ -153,3 +153,14 @@ function parselatlng(latlng) {
   }
 }
 
+// ==================================================================
+
+app.get('/v1/stores/:id', function(req, res) {
+  var id = req.params.id;
+
+  snap.getStore(id, function(err, store) {
+    if (err) return res.json(400, { reason: err });
+    if (!store) return res.json(404, { reason: 'store not found: ID=' + id });
+    res.json(store);
+  });
+});
