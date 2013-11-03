@@ -3,7 +3,7 @@
 PID=`ps aux | grep "[n]ode app" | awk '{ print $2 }'`
 [ ! -z "$PID" ] && echo "stop node app first" && exit
 
-npm start &
+PORT=$1; node app
 sleep 1
 ps aux | grep "[n]ode app" | awk '{ print $2 }' > app.pid
 echo "node app started [`cat app.pid`]"
