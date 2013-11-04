@@ -4,7 +4,7 @@ SNAPfinder
 [API Documentation][API]
 
 #### Related Projects
-* [snapfinder][snapfinder] - a mobile-first website that uses the API (Node, Express, EJS, Bootstrap 3)
+* [snapfinder][snapfinder] - a mobile-first web app that uses the API (Node, Express, EJS, Bootstrap 3)
 * [snapfinder-lib][snapfinder-lib] - provides support for importing and querying SNAP data (Node, MongoDB)
 
 Introduction
