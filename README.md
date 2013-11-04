@@ -3,6 +3,11 @@ SNAPfinder
 
 [API Documentation][API]
 
+Related Projects
+----------------
+[snapfinder][snapfinder]
+[snapfinder-lib][snapfinder-lib]
+
 Introduction
 ------------
 SNAPfinder is a REST API for locating retailers that participate in the SNAP (formerly known as Food Stamps) program.
@@ -126,3 +131,5 @@ Developers need:
 [GitHub]:            https://github.com/
 [C9Chrome]:          https://chrome.google.com/webstore/detail/cloud9-button-for-github/gkddhhofgajgmgfebhaiihlahjmjkmph?hl=en-US
 [Cloud9]:            https://c9.io/
+[snapfinder]:        https://github.com/tonypujals/snapfinder
+[snapfinder-lib]:    https://github.com/tonypujals/snapfinder-lib
