@@ -4,8 +4,8 @@ SNAPfinder
 [API Documentation][API]
 
 #### Related Projects
-* [snapfinder][snapfinder]
-* [snapfinder-lib][snapfinder-lib]
+* [snapfinder][snapfinder] - a mobile-first website that uses the API
+* [snapfinder-lib][snapfinder-lib] - provides support for importing and querying SNAP data
 
 Introduction
 ------------
