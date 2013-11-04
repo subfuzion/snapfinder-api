@@ -3,10 +3,9 @@ SNAPfinder
 
 [API Documentation][API]
 
-Related Projects
-----------------
-[snapfinder][snapfinder]
-[snapfinder-lib][snapfinder-lib]
+#### Related Projects
+* [snapfinder][snapfinder]
+* [snapfinder-lib][snapfinder-lib]
 
 Introduction
 ------------
